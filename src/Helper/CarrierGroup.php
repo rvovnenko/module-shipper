@@ -138,13 +138,22 @@ class CarrierGroup extends Data
      */
     public function saveCarrierGroupInformation($shippingAddress, $shippingMethod, array $additionalDetail = [])
     {
+	
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/rrr.log');
+		$logger = new \Zend\Log\Logger();
+		$logger->addWriter($writer);
+		$logger->info(__METHOD__);
+
         //admin and front end orders use method
         //SHQ18-1391 - need to ensure rate matches on code and price. If more than 1, then use latest
         $foundRate = false;
         $shippingPrice = $shippingAddress->getShippingAmount();
-        foreach ($shippingAddress->getShippingRatesCollection() as $rate) {
+	foreach ($shippingAddress->getShippingRatesCollection() as $rate) {
+
+	    $logger->info($rate->getCode().'-'.$shippingMethod.' | '.$rate->getPrice().'-'.$shippingPrice);
             if ($rate->getCode() == $shippingMethod && $rate->getPrice() == $shippingPrice) {
-                $foundRate = $rate;
+		    $foundRate = $rate;
+                    $logger->info('OK');
             }
         }
 
