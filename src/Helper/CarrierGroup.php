@@ -149,12 +149,19 @@ class CarrierGroup extends Data
         $foundRate = false;
         //$shippingPrice = $shippingAddress->getShippingAmount();
         $shippingPrice = $shippingAddress->getShippingInclTax();
+        foreach ($shippingAddress->getShippingRatesCollection() as $rate) {
+            if ($rate->getCode() == $shippingMethod) {
+                    $foundRate = $rate;
+                    $logger->info('OK - code');
+            }
+        }
+
 	foreach ($shippingAddress->getShippingRatesCollection() as $rate) {
 
 	    $logger->info($rate->getCode().'-'.$shippingMethod.' | '.$rate->getPrice().'-'.$shippingPrice);
             if ($rate->getCode() == $shippingMethod && $rate->getPrice() == $shippingPrice) {
 		    $foundRate = $rate;
-                    $logger->info('OK');
+                    $logger->info('OK - code and price');
             }
         }
 
